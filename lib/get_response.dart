@@ -25,7 +25,7 @@ class _GetResponseState extends State<GetResponse> {
       setState(() {
         listResponse = json.decode(_response.body);
         print('hello');
-        print(listResponse);
+        print(listResponse!.length);
         // listResponse = mapResponse!['data'];
       });
     }
@@ -49,7 +49,7 @@ class _GetResponseState extends State<GetResponse> {
       ),
       body: Container(
         color: Colors.red.shade200,
-        child:listResponse ==null ?Text('data is loading'):Text(listResponse.toString()),
+        child:listResponse ==null ?Text('data is loading'):Text(listResponse![1]['AccountName'].toString()),
       ),
     );
   }
