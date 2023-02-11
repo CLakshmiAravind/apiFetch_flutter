@@ -1,77 +1,53 @@
-import 'package:sqflite/sqflite.dart' as sql;
+import 'package:sample/sqlite.dart' ;
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqlite_api.dart';
-
-class SQLManage {
-
-  static final dbName = "sample.db";
-  static final tableName = "Contact";
-  static final colId = "ContactID";
-  static final colName = 'ContactName';
-  static final colName2 = 'AccountName';
-
-  // static final SQLManage sqlInstance = SQLManage();
-
-
-  // Database? _db;
-
-  // Future<Database> get db async{
-  //   _db ??= await initDB();
-  //   return _db!;
-  // }
-
-Future<Database> get database async {
-  if (_database != null) return _database!;
-
-  _database = await _initDB('notes.db');
-  return _database!;
-}
-
-Future<Database> _initDB(String filePath) async {
-  final dbPath = await getDatabasesPath();
-  final path = join(dbPath, filePath);
-
-  return await openDatabase(path, version: 1, onCreate: _createDB);
-}
-
-
-Future _createDB(Database db, int version) async {
-    // final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    // final textType = 'TEXT NOT NULL';
-    // final boolType = 'BOOLEAN NOT NULL';
-    // final integerType = 'INTEGER NOT NULL';
-
-    await db.execute('''
-CREATE TABLE $tableName ( 
-  CREATE TABLE $tableName(
-          $colId INTEGER PRIMARY KEY,
-          $colName TEXT,
-          $colName2 TEXT
-  )
-''');
-  }
-  initDB()async{
-    return sql.openDatabase(dbName,version: 1,onCreate:onCreate );
-  }
-
-//   Future onCreate(Database _db,int versoin) async{
-//     _db.execute(
-//       '''
-//         CREATE TABLE $tableName(
-//           $colId INTEGER PRIMARY KEY,
-//           $colName TEXT,
-//           $colName2 TEXT
+// class DBHelper {
+//   static Future<void> createTables(sql.Database database) async {
+//     await database.execute('''
+//         CREATE TABLE Contact(
+//           ContactID : INTEGER PRIMARY KEY, 
+//           ContactName : TEXT,
+//           AccountName : TEXT
 //         )
 //       ''');
 //   }
-
-//   inserted(Map<String,dynamic> row)async{
-//       Database _db = await sqlInstance.db;
-//       _db.insert(tableName, row);
-//   }
-
-//   Future<List<Map<String,dynamic>>> readDB()async{
-//     Database db = await sqlInstance.db;
-//     return await db.query(tableName);
+//   static Future<sql.Database> db() async{
+//     return sql.openDatabase();
 //   }
 // }
+
+class DBManager{
+  static Future<void> createTables(Database database) async {
+    await database.execute('''
+        CREATE TABLE Contact(
+          ContactID  INTEGER PRIMARY KEY, 
+          ContactName  TEXT,
+          AccountName  TEXT
+        )
+      ''');
+  }
+
+  static Future<Database> db() async{
+    return openDatabase(
+      'aravind.db',
+      version: 1,
+      onCreate: (Database database,int version) async{
+        await createTables(database);
+      }
+    );
+  }
+   static Future<int> createItem(int num,String name, String accountName) async {
+    final db = await DBManager.db();
+
+    final data = {'ContactID': num,'ContactName': name, 'AccountName': accountName};
+    final id = await db.insert('Contact', data,
+        conflictAlgorithm: ConflictAlgorithm.replace);
+    // print("I am here to create an item");
+    return id;
+  }
+  static Future<List<Map<String, dynamic>>> getItems() async {
+    final db = await DBManager.db();
+    // print("I show all items in Contact Table");
+    return db.query('Contact', orderBy: "ContactID");
+  }
+}
