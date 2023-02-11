@@ -77,16 +77,23 @@ class _GetResponseState extends State<GetResponse> {
       appBar: AppBar(
         title: Text('sample'),
       ),
-      body: Container(
-        color: Colors.red.shade200,
-        child:Column(
-          children: [
-            Text(data[0].toString()),
-            Text(data[1].toString()),
-            Text(data[2].toString()),
-          ],
-        ),
-      ),
+      // body: Container(
+      //   color: Colors.red.shade200,
+      //   child:Column(
+      //     children: [
+      //       Text(data[0].toString()),
+      //       Text(data[1].toString()),
+      //       Text(data[2].toString()),
+      //     ],
+      //   ),
+      // ),
+      body: ListView.builder(itemBuilder: (
+        (context,int index){
+          return Container(
+            child: listResponse==null?Text('data'):Text(data[index].toString()),
+          );
+        }
+      ),itemCount: data.length),
     );
   }
 }
