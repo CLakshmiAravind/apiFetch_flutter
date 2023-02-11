@@ -21,9 +21,11 @@ class _GetResponseState extends State<GetResponse> {
     http.Response _response;
     var client = http.Client();
     _response = await http.post(Uri.parse('http://13.68.210.77:8080/api/v1/ManagerRequest/GetContactPaged'),headers: _headers,body: _body);
-    if (_response.statusCode == 415) {
+    if (_response.statusCode == 200) {
       setState(() {
-        mapResponse = json.decode(_response.body);
+        listResponse = json.decode(_response.body);
+        print('hello');
+        print(listResponse);
         // listResponse = mapResponse!['data'];
       });
     }
@@ -47,7 +49,7 @@ class _GetResponseState extends State<GetResponse> {
       ),
       body: Container(
         color: Colors.red.shade200,
-        child:mapResponse ==null ?Text('data is loading'):Text(mapResponse.toString()),
+        child:listResponse ==null ?Text('data is loading'):Text(listResponse.toString()),
       ),
     );
   }
