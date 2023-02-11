@@ -79,7 +79,13 @@ class _GetResponseState extends State<GetResponse> {
       ),
       body: Container(
         color: Colors.red.shade200,
-        child:listResponse ==null ?Text('data is loading'):Text(data.toString()),
+        child:Column(
+          children: [
+            Text(data[0].toString()),
+            Text(data[1].toString()),
+            Text(data[2].toString()),
+          ],
+        ),
       ),
     );
   }
